@@ -23,9 +23,9 @@ void parstxt(FILE *fp)
             {
                 posa[i] += 1;
             }
-            temp = fgets(fp);
-            zeile++;
+            temp = fgetc(fp);
         }
+        zeile++;
     }
 
     for (int i = 0; i < spalten; i++)
