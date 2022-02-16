@@ -13,16 +13,17 @@ void parstxt(FILE *fp)
     int zeile = 1, temp, gamma = 0, epsilon = 0, pos = 0;
     int posa[spalten] = {0};
 
-    while ((temp = fgetc(fp)) != EOF)
+    temp = fgetc(fp);
+
+    while (temp != EOF)
     {
-        if (temp != '\n')
+        for (int i = 0; i < spalten; i++)
         {
-            posa[pos] += temp - '0';
-            pos++;
-        }
-        else
-        {
-            pos = 0;
+            if (temp == '1')
+            {
+                posa[i] += 1;
+            }
+            temp = fgets(fp);
             zeile++;
         }
     }
@@ -35,14 +36,13 @@ void parstxt(FILE *fp)
         {
             gamma |= 1;
         }
-        else 
+        else
         {
             epsilon |= 1;
         }
     }
 
-    //printf("\n gamma rate: %d epsilon rate: %d power: %d\n" , gamma, epsilon, (gamma*epsilon));
-    printf(" Anz Zeilen: %d gamma: %d epsilon: %d power: %d\n", zeile, gamma, epsilon, gamma*epsilon);
+    printf(" Anz Zeilen: %d gamma: %d epsilon: %d power: %d\n", zeile, gamma, epsilon, gamma * epsilon);
     for (int i = 0; i < spalten; i++)
     {
         printf("posnr: %d wert: %d\n", i + 1, posa[i]);
