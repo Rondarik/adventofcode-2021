@@ -11,15 +11,20 @@ int main(int argc, char *argv[9])
 
 void parstxt(FILE *fp)
 {
-    int filter[zeilen] = {1};
+    int filterCO2[zeilen] = {1};
+    int filterOX[zeilen] = {1};
     for (int j = 0; j < zeilen; j++)
     {
-        filter[j] = 1;
+        filterCO2[j] = 1;
+        filterOX[j] = 1;
     }
 
     int anzEinsen = 0;
-    int anzBetrachtet = 0;
-    int loesung[spalten] = {0};
+    int anzNullen = 0;
+    int anzBetrachtetCO2 = 0;
+    int anzBetrachtetOX = 0;
+    int loesungCO2[spalten] = {0};
+    int loesungOX[spalten] = {0};
     int bigdata[zeilen][spalten];
 
     for (int j = 0; j < zeilen; j++)
@@ -28,54 +33,103 @@ void parstxt(FILE *fp)
         {
             bigdata[j][i] = fgetc(fp) - '0';
         }
-        fgetc(fp); //zeilenumbruch rauswerfen
+        fgetc(fp); // zeilenumbruch rauswerfen
     }
 
-    int temp = 0;
+   
     for (int i = 0; i < spalten; i++)
     {
-        anzBetrachtet = 0;
+        anzBetrachtetCO2 = 0;
+        anzBetrachtetOX = 0;
         anzEinsen = 0;
+        anzNullen = 0;
 
         for (int j = 0; j < zeilen; j++)
         {
-            if (filter[j] == 1)
+            if (filterCO2[j] == 1)
             {
                 anzEinsen += bigdata[j][i];
-                anzBetrachtet++;
+                anzBetrachtetCO2++;
+            }
+            if (filterOX[j] == 1)
+            {
+                if (bigdata[j][i] == 0)
+                {
+                    anzNullen++;
+                }
+                anzBetrachtetOX++;
+                
             }
         }
-        if (anzEinsen < anzBetrachtet - anzEinsen)
+        if (anzEinsen < anzBetrachtetCO2 - anzEinsen)
         {
-            loesung[i] = 1;
+            loesungCO2[i] = 1;
         }
-        int filter1Count = 0;
-        int filter1Index = 0;
+        if (anzNullen <= anzBetrachtetOX - anzNullen)
+        {
+            loesungOX[i] = 1;
+        }
+        int filter1CountCO2 = 0;
+        int filter1IndexCO2 = 0;
+        int filter1CountOX = 0;
+        int filter1IndexOX = 0;
         for (int j = 0; j < zeilen; j++)
         {
-            if (bigdata[j][i] != loesung[i])
+            if (bigdata[j][i] != loesungCO2[i])
             {
-                filter[j] = 0;
+                filterCO2[j] = 0;
             }
-            if (filter[j] == 1) {
-                filter1Count++;
-                filter1Index = j;
+            if (filterCO2[j] == 1)
+            {
+                filter1CountCO2++;
+                filter1IndexCO2 = j;
+            }
+             if (bigdata[j][i] != loesungOX[i])
+            {
+                filterOX[j] = 0;
+            }
+            if (filterOX[j] == 1)
+            {
+                filter1CountOX++;
+                filter1IndexOX = j;
             }
         }
-        if (filter1Count == 1) {
-            for (int i = 0; i < spalten; i++) {
-                loesung[i] = bigdata[filter1Index][i];
+        if (filter1CountCO2 == 1)
+        {
+            for (int i = 0; i < spalten; i++)
+            {
+                loesungCO2[i] = bigdata[filter1IndexCO2][i];
             }
-            break;
+            filterCO2[filter1IndexCO2] = 0;
+        }
+        if (filter1CountOX == 1)
+        {
+            for (int i = 0; i < spalten; i++)
+            {
+                loesungOX[i] = bigdata[filter1IndexOX][i];
+            }
+            filterOX[filter1IndexOX] = 0;
         }
     }
     fclose(fp);
 
+    int CO2rating = 0;
     for (int i = 0; i < spalten; i++)
     {
-        printf("%d", loesung[i]);
-        temp <<= 1;
-        temp += loesung[i];
+        printf("%d", loesungCO2[i]);
+        CO2rating <<= 1;
+        CO2rating += loesungCO2[i];
     }
-    printf("\n %d", temp);
+    printf("\n %d \n", CO2rating);
+
+    int OXrating = 0;
+    for (int i = 0; i < spalten; i++)
+    {
+        printf("%d", loesungOX[i]);
+        OXrating <<= 1;
+        OXrating += loesungOX[i];
+    }
+    printf("\n %d", OXrating);
+    printf("\n %d", OXrating*CO2rating);
+
 }
