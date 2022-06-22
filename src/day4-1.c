@@ -7,16 +7,21 @@ board boards[100];
 
 void leseZahlen(FILE *fp);
 void leseBoard(FILE *fp, board *myBoard);
+int findeGewinnerBoard(int boardCount);
+int pruefeBoard(int gezogeneZahl, board *aktuellesBoard);
+int berechneScore(int letzteGezogeneZahl, board *winnerBoard);
+void printBoard(board *myboard);
 
 int main(int argc, char *argv[])
 {
-    read("input4.txt");
+    read("realinput4.txt");
 }
 
 void parstxt(FILE *fp)
 {
     int temp;
     int boardCount = 0;
+    int score = 0;
 
     leseZahlen(fp);
     while (temp = fgetc(fp) != EOF)
@@ -25,6 +30,10 @@ void parstxt(FILE *fp)
         boardCount++;
     }
     printf("%d Boards gelesen\n\n", boardCount);
+
+    score = findeGewinnerBoard(boardCount);
+
+    printf("der Gewinner ist %d\n\n", score);
 }
 
 void leseZahlen(FILE *fp)
@@ -82,14 +91,88 @@ void leseBoard(FILE *fp, board *myBoard)
         }
     }
 
+    printBoard(myBoard);
+    printf("\n");
+}
+
+void printBoard(board *myboard)
+{
     for (int i = 0; i < 5; ++i)
     {
         for (int j = 0; j < 5; ++j)
         {
-            printf("%d ", (*myBoard)[i][j]);
+            printf("%d ", (*myboard)[j][i]);
         }
         printf("\n");
     }
     printf("\n");
-    // fflush(stdout);
+}
+
+int findeGewinnerBoard(int boardCount)
+{
+    int istGewinner = 0;
+
+    for (int i = 0; i < sizeof(gezogen); i++)
+    {
+        int letzteGezogene = gezogen[i];
+        printf("%d gezogen an Stelle %d\n", letzteGezogene, i);
+        for (int j = 0; j < boardCount; j++)
+        {
+            board *myBord = &(boards[j]);
+            istGewinner = pruefeBoard(letzteGezogene, myBord);
+            if (istGewinner)
+            {
+                return berechneScore(letzteGezogene, myBord);
+            }
+        }
+    }
+    return -1;
+}
+
+int pruefeBoard(int gezogeneZahl, board *aktuellesBoard)
+{
+    int xCounter = 0;
+    int yCounter[5] = {0};
+
+    for (int y = 0; y < 5; y++)
+    {
+        xCounter = 0;
+        for (int x = 0; x < 5; x++)
+        {
+            int inhalt = (*aktuellesBoard)[x][y];
+            if (inhalt == gezogeneZahl)
+            {
+                (*aktuellesBoard)[x][y] = -1;
+            }
+            if ((*aktuellesBoard)[x][y] == -1)
+            {
+                xCounter++;
+                yCounter[x]++;
+                if ((xCounter == 5) || (yCounter[x] == 5))
+                {
+                    return 1;
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+
+int berechneScore(int letzteGezogeneZahl, board *winnerBoard)
+{
+    int score = 0;
+
+    for (int i = 0; i < 5; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            int inhalt = (*winnerBoard)[i][j];
+            if (inhalt != -1)
+            {
+                score += inhalt;
+            }
+        }
+    }
+    return score * letzteGezogeneZahl;
 }
