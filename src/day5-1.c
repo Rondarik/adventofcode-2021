@@ -61,15 +61,19 @@ void parstxt(FILE *fp)
         }
     }
 
+    int count;
+
     for (int y = 0; y < 1000; y++)
     {
         for (int x = 0; x < 1000; x++)
         {
-            printf("%d", ventsBoard[x][y]);
+            if (ventsBoard[x][y] >= 2){
+                count++;
+            }
         }
-        printf("\n");
     }
-    printf("\n\n");
+
+    printf("%d\n\n",count);
 }
 
 int leseZahl(FILE *fp)
