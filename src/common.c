@@ -26,3 +26,21 @@ void read(const char *filename)
         parstxt(fp);
     }
 }
+
+int leseZahl(FILE *fp)
+{
+    int temp = fgetc(fp);
+    int zahl = 0;
+
+    if (temp == EOF)
+    {
+        return -1;
+    }
+    
+    while (temp >= 48 && temp <= 57)
+    {
+        zahl = (zahl * 10) + (temp - '0');
+        temp = fgetc(fp);
+    }
+    return zahl;
+}
