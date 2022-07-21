@@ -3,84 +3,65 @@
 #include <stdlib.h>
 #include <string.h>
 
-const int DAYS = 80;
+const long DAYS = 256;
 
-int *alter;
-int anzahlFische = 0;
+long alter[9] = {0};
+long anzahlFische();
 
-int leseZahl(FILE *fp);
-int gesamtAlter();
-
-void zahlZufuegen(int zahl);
+void zahlZufuegen(long zahl);
 void fischeAltern();
 
-int main(int argc, char *argv[])
+long main(long argc, char *argv[])
 {
-    alter = malloc(0);
+
     read("realinput6.txt");
 }
 
 void parstxt(FILE *fp)
 {
-    int zahl = leseZahl(fp);
+    long zahl = leseZahl(fp);
     while (zahl != -1)
     {
         zahlZufuegen(zahl);
         zahl = leseZahl(fp);
     }
 
-    size_t anzahl = anzahlFische;
-    for (int i = 0; i < DAYS; i++)
+    for (long i = 0; i < DAYS; i++)
     {
 
-        if (i == 18)
+        if (i == 18 || i == 80)
         {
-            printf("Tag 18, Anzahl: %d\n", anzahlFische);
+            printf("Tag %ld, Anzahl: %ld\n", i, anzahlFische());
         }
+
         fischeAltern();
     }
 
-    // int ergebnis = gesamtAlter();
-    printf("Gesamtalter: %d\n\n", anzahlFische);
+    printf("Anzahl der Fische: %ld\n\n", anzahlFische());
 }
 
-int gesamtAlter()
+long anzahlFische()
 {
-    size_t anzahl = anzahlFische;
-    int ergebnis = 0;
-    for (int i = 0; i < anzahl; i++)
+    long anzahl = 0;
+    for (long i = 0; i < 9; i++)
     {
-        ergebnis += alter[i];
+        anzahl = anzahl + alter[i];
     }
-    return ergebnis;
+    return anzahl;
 }
 
 void fischeAltern()
 {
-    int anzahl = anzahlFische;
-    for (int i = 0; i < anzahl; i++)
+    long temp = alter[0];
+    for (long i = 0; i < 8; i++)
     {
-        if (alter[i] == 0)
-        {
-            alter[i] = 6;
-            zahlZufuegen(8);
-        }
-        else
-        {
-            alter[i] = alter[i] - 1;
-        }
+        alter[i] = alter[i + 1];
     }
+    alter[8] = temp;
+    alter[6] = alter[6] + temp;
 }
 
-void zahlZufuegen(int zahl)
+void zahlZufuegen(long zahl)
 {
-    int intSize = sizeof(int);
-    int bisherigeGroesse = anzahlFische;
-    int neueGroesse = (bisherigeGroesse + 1);
-    int *alt = alter;
-    alter = (int *)malloc(neueGroesse * intSize);
-    memcpy(alter, alt, bisherigeGroesse * intSize);
-    alter[neueGroesse - 1] = zahl;
-    free(alt);
-    anzahlFische = anzahlFische + 1;
+    alter[zahl]++;
 }
