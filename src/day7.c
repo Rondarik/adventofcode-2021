@@ -6,27 +6,31 @@ int *krabbenpos = {0};
 int max = 0;
 int anzahlKrabben = 0;
 
-int fuel(int max);
+int fuel71(int max);
+int fuel72(int max);
 void einlesen(FILE *fp);
 void zahlZufuegen(int zahl);
 
+// kalkulation: Tag 7-1 oder 7-2
+#define calcFuel fuel72
+
 int main(int argc, char *argv[])
 {
-
     read("realinput7.txt");
 }
 
 void parstxt(FILE *fp)
 {
-    int minfuel = 1000000000;
+    int minfuel = __INT_MAX__;
     einlesen(fp);
     printf("Menge der Krabben: %d \n", anzahlKrabben);
 
     for (int i = 0; i < max; i++)
     {
-        if (fuel(i) < minfuel)
+        int fuel = calcFuel(i);
+        if (fuel < minfuel)
         {
-            minfuel = fuel(i);
+            minfuel = fuel;
         }
     }
 
@@ -48,7 +52,23 @@ void einlesen(FILE *fp)
     }
 }
 
-int fuel(int pos)
+int fuel71(int pos)
+{
+    int summe = 0;
+    for (int i = 0; i < anzahlKrabben; i++)
+    {
+
+        int fuel = krabbenpos[i] - pos;
+        if (fuel < 0)
+        {
+            fuel = fuel * -1;
+        }
+        summe = summe + fuel;
+    }
+
+    return summe;
+}
+int fuel72(int pos)
 {
     int summe = 0;
     for (int i = 0; i < anzahlKrabben; i++)
