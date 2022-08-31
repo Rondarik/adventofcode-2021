@@ -1,89 +1,87 @@
 #include "common.h"
 
-int zaehleBuchstaben(FILE *fp);
+const int blank = ' ';
 
-int anzahl;
+int eins = 0;
+int vier = 0;
+int sieben = 0;
+int acht = 0;
 
+int zaehleBuchstaben(FILE *);
+void erhoeheZaehler(int);
+
+int zeilenEnde = 0;
 int main(int argc, char *argv[])
 {
-
     read("realinput8.txt");
 }
 
 void parstxt(FILE *fp)
 {
-    int status = 0;
-    int countNow = 0;
-    int eins = 0;
-    int vier = 0;
-    int sieben = 0;
-    int acht = 0;
+    int inOutput = 0;
+    int anzahl = 1;
 
-    while (status != -1)
+    while (!zeilenEnde || (anzahl != 0))
     {
-        status = zaehleBuchstaben(fp);
-        if (status == -2)
+        anzahl = zaehleBuchstaben(fp);
+        if (anzahl == 1) // start output gefunden
         {
-            countNow = 1;
+            inOutput = 1;
         }
 
-        if (countNow == 1)
+        if (inOutput == 1)
         {
+            erhoeheZaehler(anzahl);
+        }
 
-            if (anzahl == 2)
-            {
-                eins++;
-            }
-            else if (anzahl == 4)
-            {
-                vier++;
-            }
-            else if (anzahl == 3)
-            {
-                sieben++;
-            }
-            else if (anzahl == 7)
-            {
-                acht++;
-            }
-        }
-        if (status == -3)
+        if (zeilenEnde)
         {
-            countNow = 0;
+            inOutput = 0;
         }
-        //  printf("%d\n", anzahl);
     }
 
-    printf("%d\n%d\n%d\n%d\n\n", eins, vier, sieben, acht);
-    printf("%d\n\n",eins+vier+sieben+acht);
+    printf("%d + %d + %d + %d = %d\n\n", eins, vier, sieben, acht, eins + vier + sieben + acht);
 }
 
 int zaehleBuchstaben(FILE *fp)
 {
+    zeilenEnde = 0;
+    int anzahl = 0;
+
     int input = fgetc(fp);
-    int blank = ' ';
-    anzahl = 0;
-
-    if (input == EOF)
-    {
-        return -1;
-    }
-
-    if (input == '|')
-    {
-        return -2;
-    }
-
     while (input != blank)
     {
-        anzahl += 1;
-        input = fgetc(fp);
-
-        if ((input == '\n') || (input == EOF))
+        if ((input != '\n') && (input != EOF)) // normales zeichen gelesen
         {
-            return -3;
+            anzahl++;
         }
+        else // eol/eof gelesen
+        {
+            zeilenEnde = 1;
+            break;
+        }
+        input = fgetc(fp);
     }
 
-    return 1;
+    return anzahl;
+}
+
+void erhoeheZaehler(int anzahl)
+{
+    if (anzahl == 2)
+    {
+        eins++;
+    }
+    else if (anzahl == 4)
+    {
+        vier++;
+    }
+    else if (anzahl == 3)
+    {
+        sieben++;
+    }
+    else if (anzahl == 7)
+    {
+        acht++;
+    }
 }
