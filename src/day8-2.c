@@ -47,21 +47,21 @@ void parstxt(FILE *fp)
             else
             {
                 int ziffer = auswertung(gelesen);
-                printf("gelesen: %d\n\n", ziffer);
+                printf("gelesen: %d\n", ziffer);
 
                 ergebnisProZeile = (ergebnisProZeile * 10 + ziffer);
             }
         }
 
-        if (zeilenEnde)
+        if (zeilenEnde && ergebnisProZeile != 0)
         {
             endsumme = (endsumme + ergebnisProZeile);
-            printf("Ergebnis Zeile: %d, Zwischensumme: %d\n", ergebnisProZeile, endsumme);
+            printf("Ergebnis Zeile: %d, Zwischensumme: %d\n\n", ergebnisProZeile, endsumme);
             ergebnisProZeile = 0;
             inOutput = 0;
         }
     }
-    printf("Endergebnigs: %d\n", endsumme);
+    printf("Endergebnis: %d\n", endsumme);
 }
 
 int einlesen(FILE *fp)
