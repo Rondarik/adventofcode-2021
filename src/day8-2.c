@@ -5,6 +5,9 @@ const int blank = ' ';
 __int8_t eins = 0;
 __int8_t vier = 0;
 __int8_t sieben = 0;
+int ergebnisProZeile = 0;
+int anzahlProZeile = 0;
+int endsumme = 0;
 
 int einlesen(FILE *, int inOutput);
 __int8_t setBit(__int8_t temp, int bit);
@@ -17,7 +20,7 @@ int bitCount(__int8_t temp);
 int zeilenEnde = 0;
 int main(int argc, char *argv[])
 {
-    read("input8.txt");
+    read("realinput8.txt");
 }
 
 void parstxt(FILE *fp)
@@ -66,12 +69,29 @@ int einlesen(FILE *fp, int inOutput)
     if (inOutput == 0)
     {
         setGlobalVariable(anzahl, temp);
+        anzahlProZeile = 0;
+        ergebnisProZeile = 0;
     }
     else
     {
         ergebnis = vergleich(anzahl, temp);
         printf("%d\n\n", ergebnis);
+
+        ergebnisProZeile = (ergebnisProZeile + ergebnis);
+        anzahlProZeile++;
+        if (anzahlProZeile < 4)
+        {
+        ergebnisProZeile = ergebnisProZeile*10;
+        }
+        
     }
+
+    if (anzahlProZeile == 4)
+    {
+        endsumme = (endsumme + ergebnisProZeile);
+        printf("%d\n", endsumme);
+    }
+    
 
     return anzahl;
 }
