@@ -4,18 +4,15 @@ const int blank = ' ';
 
 __int8_t eins = 0;
 __int8_t vier = 0;
-__int8_t sieben = 0;
-int ergebnisProZeile = 0;
-int anzahlProZeile = 0;
-int endsumme = 0;
+//__int8_t sieben = 0;
 
-int einlesen(FILE *, int inOutput);
-__int8_t setBit(__int8_t temp, int bit);
-void setGlobalVariable(int anzahl, __int8_t temp);
-int vergleich(int anzahl, __int8_t temp);
-int auswertungFuenfBit(__int8_t temp);
-int auswertungSechsBit(__int8_t temp);
-int bitCount(__int8_t temp);
+int einlesen(FILE *);
+__int8_t setBit(__int8_t setzeIn, int bit);
+void setGlobalVariable(int anzahlBits, __int8_t setzeAuf);
+int auswertung(__int8_t auszuwerten);
+int auswertungFuenfBit(__int8_t auszuwerten);
+int auswertungSechsBit(__int8_t auszuwerten);
+int bitCount(__int8_t zaehleIn);
 
 int zeilenEnde = 0;
 int main(int argc, char *argv[])
@@ -26,37 +23,58 @@ int main(int argc, char *argv[])
 void parstxt(FILE *fp)
 {
     int inOutput = 0;
-    int anzahl = 1;
+    int gelesen = 0;
+    int anzahlBits = 0;
+    int ergebnisProZeile = 0;
+    int endsumme = 0;
 
-    while (!zeilenEnde || (anzahl != 0))
+    while (!zeilenEnde || (gelesen != 0))
     {
-        anzahl = einlesen(fp, inOutput);
-        if (anzahl == 1) // start output gefunden
+        gelesen = einlesen(fp);
+        anzahlBits = bitCount(gelesen);
+
+        if (anzahlBits == 0) // start output gefunden
         {
             inOutput = 1;
+        }
+        else
+        {
+            if (inOutput == 0)
+            {
+                setGlobalVariable(anzahlBits, gelesen);
+                ergebnisProZeile = 0;
+            }
+            else
+            {
+                int ziffer = auswertung(gelesen);
+                printf("gelesen: %d\n\n", ziffer);
+
+                ergebnisProZeile = (ergebnisProZeile * 10 + ziffer);
+            }
         }
 
         if (zeilenEnde)
         {
+            endsumme = (endsumme + ergebnisProZeile);
+            printf("Ergebnis Zeile: %d, Zwischensumme: %d\n", ergebnisProZeile, endsumme);
+            ergebnisProZeile = 0;
             inOutput = 0;
         }
     }
+    printf("Endergebnigs: %d\n", endsumme);
 }
 
-int einlesen(FILE *fp, int inOutput)
+int einlesen(FILE *fp)
 {
     zeilenEnde = 0;
-    int anzahl = 0;
-    int ergebnis;
-    __int8_t temp = 0;
+    __int8_t gelesen = 0;
 
     int input = fgetc(fp);
     while (input != blank)
     {
         if ((input != '\n') && (input != EOF)) // normales zeichen gelesen
         {
-            anzahl++;
-            temp = setBit(temp, (input - 'a'));
+            gelesen = setBit(gelesen, (input - 'a'));
         }
         else // eol/eof gelesen
         {
@@ -65,78 +83,51 @@ int einlesen(FILE *fp, int inOutput)
         }
         input = fgetc(fp);
     }
-
-    if (inOutput == 0)
-    {
-        setGlobalVariable(anzahl, temp);
-        anzahlProZeile = 0;
-        ergebnisProZeile = 0;
-    }
-    else
-    {
-        ergebnis = vergleich(anzahl, temp);
-        printf("%d\n\n", ergebnis);
-
-        ergebnisProZeile = (ergebnisProZeile + ergebnis);
-        anzahlProZeile++;
-        if (anzahlProZeile < 4)
-        {
-        ergebnisProZeile = ergebnisProZeile*10;
-        }
-        
-    }
-
-    if (anzahlProZeile == 4)
-    {
-        endsumme = (endsumme + ergebnisProZeile);
-        printf("%d\n", endsumme);
-    }
-    
-
-    return anzahl;
+    return gelesen;
 }
 
-__int8_t setBit(__int8_t temp, int bit)
+__int8_t setBit(__int8_t setzeIn, int bit)
 {
-    return temp | (1 << bit);
+    return setzeIn | (1 << bit);
 }
 
-int vergleich(int anzahl, __int8_t temp)
+int auswertung(__int8_t auszuwerten)
 {
-    if (anzahl == 2)
+    int anzahlBits = bitCount(auszuwerten);
+    if (anzahlBits == 2)
     {
         return 1;
     }
-    if (anzahl == 4)
+    if (anzahlBits == 4)
     {
         return 4;
     }
-    if (anzahl == 3)
+    if (anzahlBits == 3)
     {
         return 7;
     }
-    if (anzahl == 5)
+    if (anzahlBits == 5)
     {
-        return auswertungFuenfBit(temp);
+        return auswertungFuenfBit(auszuwerten);
     }
 
-    if (anzahl == 6)
+    if (anzahlBits == 6)
     {
-        return auswertungSechsBit(temp);
+        return auswertungSechsBit(auszuwerten);
     }
-    if (anzahl == 7)
+    if (anzahlBits == 7)
     {
         return 8;
     }
 }
 
-int auswertungFuenfBit(__int8_t temp)
+int auswertungFuenfBit(__int8_t auszuwerten)
 {
-    if (bitCount(temp & eins) == 2)
+    if (bitCount(auszuwerten & eins) == 2)
     {
         return 3;
     }
-    if (bitCount(temp & vier) == 2)
+    if (bitCount(auszuwerten & vier) == 2)
     {
         return 2;
     }
@@ -146,13 +137,13 @@ int auswertungFuenfBit(__int8_t temp)
     }
 }
 
-int auswertungSechsBit(__int8_t temp)
+int auswertungSechsBit(__int8_t auszuwerten)
 {
-    if (bitCount(temp & eins) == 1)
+    if (bitCount(auszuwerten & eins) == 1)
     {
         return 6;
     }
-    if (bitCount(temp & vier) == 4)
+    if (bitCount(auszuwerten & vier) == 4)
     {
         return 9;
     }
@@ -162,34 +153,30 @@ int auswertungSechsBit(__int8_t temp)
     }
 }
 
-void setGlobalVariable(int anzahl, __int8_t temp)
+void setGlobalVariable(int anzahlBits, __int8_t setzeAuf)
 {
-    if (anzahl == 2)
+    if (anzahlBits == 2)
     {
-        eins = temp;
+        eins = setzeAuf;
     }
-    if (anzahl == 3)
+    if (anzahlBits == 4)
     {
-        sieben = temp;
-    }
-    if (anzahl == 4)
-    {
-        vier = temp;
+        vier = setzeAuf;
     }
 }
 
-int bitCount(__int8_t temp)
+int bitCount(__int8_t zaehleIn)
 {
     __int8_t filter = 1;
-    int anzahl = 0;
+    int anzahlBits = 0;
 
     for (int i = 0; i < 7; i++)
     {
-        if ((temp & filter) != 0)
+        if ((zaehleIn & filter) != 0)
         {
-            anzahl++;
+            anzahlBits++;
         }
         filter = filter << 1;
     }
-    return anzahl;
+    return anzahlBits;
 }
