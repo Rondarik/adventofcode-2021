@@ -3,7 +3,6 @@
 #include <stdio.h>
 
 #include "dynarray.h"
-#include "arrayclass.h"
 
 void parstxt(FILE *fp){};
 
