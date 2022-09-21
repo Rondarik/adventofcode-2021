@@ -9,6 +9,7 @@
                 "-g",
                 "${file}",
                 "common.c",
+                "dynarray.c",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}.exe"
             ],
