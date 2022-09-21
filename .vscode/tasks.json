@@ -8,8 +8,7 @@
                 "-fdiagnostics-color=always",
                 "-g",
                 "${file}",
-                "common.c",
-                "dynarray.c",
+                "arrayclass.cpp",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}.exe"
             ],
