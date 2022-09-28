@@ -27,6 +27,7 @@ void read(const char *filename)
     }
 }
 
+//liest Ziffern aus und setzt sie zu einer Zahl zusammen
 int leseZahl(FILE *fp)
 {
     int temp = fgetc(fp);
