@@ -34,6 +34,15 @@ int wertbei(dynArray *array, int x, int y)
     return array->data[x][y];
 }
 
+int getMaxX(dynArray *array)
+{
+    return array->maxX;
+}
+
+int getMaxY(dynArray *array)
+{
+    return array->maxY;
+}
 
 void vergroessere(dynArray *array, int neuesX, int neuesY)
 {
