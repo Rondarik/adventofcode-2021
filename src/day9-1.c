@@ -60,56 +60,36 @@ int isLowPoint(dynArray *array, int x, int y)
 {
     int maxX = getMaxX(array);
     int maxY = getMaxY(array);
-    int isLowPoint = 0;
-
     int point = wertbei(array, x, y);
 
     if (x < maxX)
     {
-        if (point < wertbei(array, x + 1, y))
+        if (point >= wertbei(array, x + 1, y))
         {
-            isLowPoint = 1;
-        }
-        else
-        {
-            return isLowPoint;
+            return 0;
         }
     }
     if (x > 0)
     {
-        if (point < wertbei(array, x - 1, y))
+        if (point >= wertbei(array, x - 1, y))
         {
-            isLowPoint = 1;
-        }
-        else
-        {
-            isLowPoint = 0;
-            return isLowPoint;
+            return 0;
         }
     }
     if (y > 0)
     {
-        if (point < wertbei(array, x, y - 1))
+        if (point >= wertbei(array, x, y - 1))
         {
-            isLowPoint = 1;
-        }
-        else
-        {
-            isLowPoint = 0;
-            return isLowPoint;
+            return 0;
         }
     }
     if (y < maxY)
     {
-        if (point < wertbei(array, x, y + 1))
+        if (point >= wertbei(array, x, y + 1))
         {
-            isLowPoint = 1;
-        }
-        else
-        {
-            isLowPoint = 0;
+            return 0;
         }
     }
 
-    return isLowPoint;
+    return 1;
 }
