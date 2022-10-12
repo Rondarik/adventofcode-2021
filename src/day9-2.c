@@ -9,7 +9,7 @@ dynArray *findeLowPoints(dynArray *array);
 dynArray *erstelleNachbarListe(dynArray *array, int x, int y);
 int istSinnvollerNachbar(dynArray *array, int x, int y);
 int istInnerhalbDerGrenzen(dynArray *array, int x, int y);
-dynArray *erstelleBasin(dynArray *array, int x, int y);
+void fuelleBaisin(dynArray *basin, dynArray *array, int x, int y);
 
 void parstxt(FILE *fp) {}
 
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     FILE *fp;
 
     // Datei oeffnen
-    fp = fopen("input9.txt", "r");
+    fp = fopen("realinput9.txt", "r");
 
     int i = 0, j = 0;
     int input = fgetc(fp);
@@ -39,10 +39,35 @@ int main(int argc, char *argv[])
         input = fgetc(fp);
     }
     dynArray *koordinatenArray = findeLowPoints(array);
-    ausgabe(koordinatenArray);
-    printf("%d\n\n", getMaxX(koordinatenArray));
-    
-    dynArray *Nachbarn = erstelleNachbarListe(array, 0, 0);
+
+    printf("Anz LowPoints: %d\n\n", getMaxX(koordinatenArray) + 1);
+
+    int gold = 0, silber = 0, bronze = 0;
+
+    for (int i = 0; i <= getMaxX(koordinatenArray); i++)
+    {
+        dynArray *basin = erzeuge();
+        fuelleBaisin(basin, array, wertbei(koordinatenArray, i, 0), wertbei(koordinatenArray, i, 1));
+
+        int basinGroesse = getMaxX(basin) + 1;
+        if (basinGroesse > gold)
+        {
+            bronze = silber;
+            silber = gold;
+            gold = basinGroesse;
+        }
+        else if (basinGroesse > silber)
+        {
+            bronze = silber;
+            silber = basinGroesse;
+        }
+        else if (basinGroesse > bronze)
+        {
+            bronze = basinGroesse;
+        }
+    }
+
+    printf("gold: %d\nsilber: %d\nbronze: %d\nEndergebnis: %d\n\n", gold, silber, bronze, (gold * silber * bronze));
 }
 
 dynArray *findeLowPoints(dynArray *array)
@@ -66,7 +91,6 @@ dynArray *findeLowPoints(dynArray *array)
     }
     return lowPointKoordinaten;
 }
-
 
 int isLowPoint(dynArray *array, int x, int y)
 {
@@ -106,70 +130,90 @@ int isLowPoint(dynArray *array, int x, int y)
     return 1;
 }
 
-dynArray *erstelleNachbarListe(dynArray *array, int x, int y){
-    dynArray *ListeNachbarn = erzeuge();
+dynArray *erstelleNachbarListe(dynArray *array, int x, int y)
+{
+    dynArray *listeNachbarn = erzeuge();
     int c = 0;
 
-    if (istSinnvollerNachbar(array, x+1,y))
+    if (istSinnvollerNachbar(array, x + 1, y))
     {
-        wertRein(ListeNachbarn,c ,0, x+1);
-        wertRein(ListeNachbarn,c ,1, y);
+        wertRein(listeNachbarn, c, 0, x + 1);
+        wertRein(listeNachbarn, c, 1, y);
         c++;
-    } 
-    if (istSinnvollerNachbar(array, x-1,y))
+    }
+    if (istSinnvollerNachbar(array, x - 1, y))
     {
-        wertRein(ListeNachbarn,c ,0, x-1);
-        wertRein(ListeNachbarn,c ,1, y);
+        wertRein(listeNachbarn, c, 0, x - 1);
+        wertRein(listeNachbarn, c, 1, y);
         c++;
-    }if (istSinnvollerNachbar(array, x,y+1))
+    }
+    if (istSinnvollerNachbar(array, x, y + 1))
     {
-        wertRein(ListeNachbarn,c ,0, x);
-        wertRein(ListeNachbarn,c ,1, y+1);
+        wertRein(listeNachbarn, c, 0, x);
+        wertRein(listeNachbarn, c, 1, y + 1);
         c++;
-    } if (istSinnvollerNachbar(array, x,y-1))
+    }
+    if (istSinnvollerNachbar(array, x, y - 1))
     {
-        wertRein(ListeNachbarn,c ,0, x);
-        wertRein(ListeNachbarn,c ,1, y-1);
+        wertRein(listeNachbarn, c, 0, x);
+        wertRein(listeNachbarn, c, 1, y - 1);
         c++;
-    } 
-    ausgabe(ListeNachbarn);
-    return ListeNachbarn;
+    }
 
+    return listeNachbarn;
 }
 
-int istSinnvollerNachbar(dynArray *array, int x, int y){
+int istSinnvollerNachbar(dynArray *array, int x, int y)
+{
 
-    if ((istInnerhalbDerGrenzen(array, x, y)) && (wertbei(array, x, y) < 9 ))
+    if ((istInnerhalbDerGrenzen(array, x, y)) && (wertbei(array, x, y) < 9))
     {
-        return 1; 
+        return 1;
     }
 
     return 0;
 }
 
-int istInnerhalbDerGrenzen(dynArray *array, int x, int y){
+int istInnerhalbDerGrenzen(dynArray *array, int x, int y)
+{
     if ((x < 0) || (y < 0) || (x > getMaxX(array)) || (y > getMaxY(array)))
     {
         return 0;
     }
-    
+
     return 1;
 }
 
-int istSchonGeprueft(){
+int istInBaisin(dynArray *basin, int x, int y)
+{
 
+    for (int i = 0; i <= getMaxX(basin); i++)
+    {
+        if ((wertbei(basin, i, 0) == x) && (wertbei(basin, i, 1) == y))
+        {
+            return 1;
+        }
+    }
 
+    return 0;
 }
 
-dynArray *erstelleBasin(dynArray *array, int x, int y){
-    dynArray *Basin = erzeuge();
-    dynArray *dieLiebenNachbarn;
+void fuelleBaisin(dynArray *basin, dynArray *array, int x, int y)
+{
 
-    wertRein(Basin, 0, 0 ,x);
-    wertRein(Basin, 0, 1 ,y);
+    dynArray *dieLiebenNachbarn;
+    int insertAt = getMaxX(basin) + 1;
+
+    wertRein(basin, insertAt, 0, x);
+    wertRein(basin, insertAt, 1, y);
 
     dieLiebenNachbarn = erstelleNachbarListe(array, x, y);
-    
 
-    return Basin;
+    for (int i = 0; i <= getMaxX(dieLiebenNachbarn); i++)
+    {
+        if (!istInBaisin(basin, wertbei(dieLiebenNachbarn, i, 0), wertbei(dieLiebenNachbarn, i, 1)))
+        {
+            fuelleBaisin(basin, array, wertbei(dieLiebenNachbarn, i, 0), wertbei(dieLiebenNachbarn, i, 1));
+        }
+    }
 }
