@@ -10,7 +10,6 @@ int isLowPoint(dynArray *array, int x, int y);
 dynArray *findeLowPoints(dynArray *array);
 dynArray *erstelleNachbarListe(dynArray *array, int x, int y);
 int istSinnvollerNachbar(dynArray *array, int x, int y);
-int istInnerhalbDerGrenzen(dynArray *array, int x, int y);
 void fuelleBaisin(dynArray *basin, dynArray *array, int x, int y);
 
 void parstxt(FILE *fp) {}
@@ -19,11 +18,8 @@ int main(int argc, char *argv[])
 {
     dynArray *array = erzeuge();
 
-    // Dateizeiger erstellen
-    FILE *fp;
-
     // Datei oeffnen
-    fp = fopen("realinput9.txt", "r");
+    FILE *fp = fopen("realinput9.txt", "r");
 
     int y = 0, x = 0;
 
@@ -32,8 +28,7 @@ int main(int argc, char *argv[])
     {
         if (input != '\n')
         {
-            wertRein(array, y, x, (input - '0'));
-            x++;
+            wertRein(array, y, x++, (input - '0'));
         }
         else
         {
@@ -56,7 +51,6 @@ int main(int argc, char *argv[])
         int verschieben = 0;
         for (int i = 0; i < TARGET_COUNT; i++) {
             if (basinGroesse > groesste[i] && !verschieben) {
-                printf("groesse: %d an stelle %d (ersetzt %d)\n", basinGroesse, i, groesste[i]);
                 verschieben = groesste[i];
                 groesste[i] = basinGroesse;
             } else if (verschieben) {
@@ -143,37 +137,13 @@ dynArray *erstelleNachbarListe(dynArray *array, int x, int y)
 
 int istSinnvollerNachbar(dynArray *array, int x, int y)
 {
+    int result = (x >= 0);
+    result = result && (y >= 0);
+    result = result && (x <= getMaxX(array));
+    result = result && (y <= getMaxY(array));
+    result = result && (wertbei(array, x, y) < 9);
 
-    if ((istInnerhalbDerGrenzen(array, x, y)) && (wertbei(array, x, y) < 9))
-    {
-        return 1;
-    }
-
-    return 0;
-}
-
-int istInnerhalbDerGrenzen(dynArray *array, int x, int y)
-{
-    if ((x < 0) || (y < 0) || (x > getMaxX(array)) || (y > getMaxY(array)))
-    {
-        return 0;
-    }
-
-    return 1;
-}
-
-int istInBaisin(dynArray *basin, int x, int y)
-{
-
-    for (int i = 0; i < groesseX(basin); i++)
-    {
-        if ((wertbei(basin, i, 0) == x) && (wertbei(basin, i, 1) == y))
-        {
-            return 1;
-        }
-    }
-
-    return 0;
+    return result;
 }
 
 void fuelleBaisin(dynArray *basin, dynArray *array, int x, int y)
@@ -194,4 +164,17 @@ void fuelleBaisin(dynArray *basin, dynArray *array, int x, int y)
             fuelleBaisin(basin, array, wertbei(dieLiebenNachbarn, i, 0), wertbei(dieLiebenNachbarn, i, 1));
         }
     }
+}
+
+int istInBaisin(dynArray *basin, int x, int y)
+{
+    for (int i = 0; i < groesseX(basin); i++)
+    {
+        if ((wertbei(basin, i, 0) == x) && (wertbei(basin, i, 1) == y))
+        {
+            return 1;
+        }
+    }
+
+    return 0;
 }
