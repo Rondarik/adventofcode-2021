@@ -4,6 +4,8 @@
 
 #include "dynarray.h"
 
+#define TARGET_COUNT 3
+
 int isLowPoint(dynArray *array, int x, int y);
 dynArray *findeLowPoints(dynArray *array);
 dynArray *erstelleNachbarListe(dynArray *array, int x, int y);
@@ -43,8 +45,7 @@ int main(int argc, char *argv[])
 
     printf("Anz LowPoints: %d\n\n", groesseX(koordinatenArray));
 
-    int gold = 0, silber = 0, bronze = 0;
-    int groesste[3] = { 0 };
+    int groesste[TARGET_COUNT] = { 0 };
 
     for (int x = 0; x < groesseX(koordinatenArray); x++)
     {
@@ -52,16 +53,22 @@ int main(int argc, char *argv[])
         fuelleBaisin(basin, array, wertbei(koordinatenArray, x, 0), wertbei(koordinatenArray, x, 1));
 
         int basinGroesse = groesseX(basin);
-        for (int i = 0; i < 3; i++) {
-            if (basinGroesse > groesste[i]) {
+        int verschieben = 0;
+        for (int i = 0; i < TARGET_COUNT; i++) {
+            if (basinGroesse > groesste[i] && !verschieben) {
+                printf("groesse: %d an stelle %d (ersetzt %d)\n", basinGroesse, i, groesste[i]);
+                verschieben = groesste[i];
                 groesste[i] = basinGroesse;
-                break;
+            } else if (verschieben) {
+                int temp = groesste[i];
+                groesste[i] = verschieben;
+                verschieben = temp;
             }
         }
     }
 
     int result = 1;
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < TARGET_COUNT; i++) {
         printf("%d: %d ", i, groesste[i]);
         result *= groesste[i];
     }
@@ -90,28 +97,15 @@ dynArray *findeLowPoints(dynArray *array)
 
 int isLowPoint(dynArray *array, int x, int y)
 {
-    int maxX = getMaxX(array);
-    int maxY = getMaxY(array);
     int point = wertbei(array, x, y);
 
-    if (x < maxX && point >= wertbei(array, x + 1, y))
-    {
-        return 0;
-    }
-    if (x > 0 && point >= wertbei(array, x - 1, y))
-    {
-        return 0;
-    }
-    if (y > 0 && point >= wertbei(array, x, y - 1))
-    {
-        return 0;
-    }
-    if (y < maxY && point >= wertbei(array, x, y + 1))
-    {
-        return 0;
-    }
+    int result = 1;
+    result = result && !(x < getMaxX(array) && point >= wertbei(array, x + 1, y));
+    result = result && !(x > 0 && point >= wertbei(array, x - 1, y));
+    result = result && !(y > 0 && point >= wertbei(array, x, y - 1));
+    result = result && !(y < getMaxY(array) && point >= wertbei(array, x, y + 1));
 
-    return 1;
+    return result;
 }
 
 dynArray *erstelleNachbarListe(dynArray *array, int x, int y)
@@ -171,7 +165,7 @@ int istInnerhalbDerGrenzen(dynArray *array, int x, int y)
 int istInBaisin(dynArray *basin, int x, int y)
 {
 
-    for (int i = 0; i <= getMaxX(basin); i++)
+    for (int i = 0; i < groesseX(basin); i++)
     {
         if ((wertbei(basin, i, 0) == x) && (wertbei(basin, i, 1) == y))
         {
