@@ -23,63 +23,59 @@ int main(int argc, char *argv[])
     // Datei oeffnen
     fp = fopen("realinput9.txt", "r");
 
-    int i = 0, j = 0;
-    int input = fgetc(fp);
+    int y = 0, x = 0;
 
-    while (input != EOF)
+    int input;
+    while ((input = fgetc(fp)) != EOF)
     {
-        while ((input != '\n') && (input != EOF))
+        if (input != '\n')
         {
-            wertRein(array, i, j, (input - '0'));
-            j++;
-            input = fgetc(fp);
+            wertRein(array, y, x, (input - '0'));
+            x++;
         }
-        i++;
-        j = 0;
-        input = fgetc(fp);
+        else
+        {
+            y++;
+            x = 0;
+        }
     }
     dynArray *koordinatenArray = findeLowPoints(array);
 
-    printf("Anz LowPoints: %d\n\n", getMaxX(koordinatenArray) + 1);
+    printf("Anz LowPoints: %d\n\n", groesseX(koordinatenArray));
 
     int gold = 0, silber = 0, bronze = 0;
+    int groesste[3] = { 0 };
 
-    for (int i = 0; i <= getMaxX(koordinatenArray); i++)
+    for (int x = 0; x < groesseX(koordinatenArray); x++)
     {
         dynArray *basin = erzeuge();
-        fuelleBaisin(basin, array, wertbei(koordinatenArray, i, 0), wertbei(koordinatenArray, i, 1));
+        fuelleBaisin(basin, array, wertbei(koordinatenArray, x, 0), wertbei(koordinatenArray, x, 1));
 
-        int basinGroesse = getMaxX(basin) + 1;
-        if (basinGroesse > gold)
-        {
-            bronze = silber;
-            silber = gold;
-            gold = basinGroesse;
-        }
-        else if (basinGroesse > silber)
-        {
-            bronze = silber;
-            silber = basinGroesse;
-        }
-        else if (basinGroesse > bronze)
-        {
-            bronze = basinGroesse;
+        int basinGroesse = groesseX(basin);
+        for (int i = 0; i < 3; i++) {
+            if (basinGroesse > groesste[i]) {
+                groesste[i] = basinGroesse;
+                break;
+            }
         }
     }
 
-    printf("gold: %d\nsilber: %d\nbronze: %d\nEndergebnis: %d\n\n", gold, silber, bronze, (gold * silber * bronze));
+    int result = 1;
+    for (int i = 0; i < 3; i++) {
+        printf("%d: %d ", i, groesste[i]);
+        result *= groesste[i];
+    }
+    printf("\nEndergebnis: %d\n\n", result);
 }
 
 dynArray *findeLowPoints(dynArray *array)
 {
     dynArray *lowPointKoordinaten = erzeuge();
-    int maxX = getMaxX(array);
-    int maxY = getMaxY(array);
     int a = 0;
 
-    for (int x = 0; x <= maxX; x++)
+    for (int x = 0; x < groesseX(array); x++)
     {
-        for (int y = 0; y <= maxY; y++)
+        for (int y = 0; y <= groesseY(array); y++)
         {
             if (isLowPoint(array, x, y))
             {
@@ -98,33 +94,21 @@ int isLowPoint(dynArray *array, int x, int y)
     int maxY = getMaxY(array);
     int point = wertbei(array, x, y);
 
-    if (x < maxX)
+    if (x < maxX && point >= wertbei(array, x + 1, y))
     {
-        if (point >= wertbei(array, x + 1, y))
-        {
-            return 0;
-        }
+        return 0;
     }
-    if (x > 0)
+    if (x > 0 && point >= wertbei(array, x - 1, y))
     {
-        if (point >= wertbei(array, x - 1, y))
-        {
-            return 0;
-        }
+        return 0;
     }
-    if (y > 0)
+    if (y > 0 && point >= wertbei(array, x, y - 1))
     {
-        if (point >= wertbei(array, x, y - 1))
-        {
-            return 0;
-        }
+        return 0;
     }
-    if (y < maxY)
+    if (y < maxY && point >= wertbei(array, x, y + 1))
     {
-        if (point >= wertbei(array, x, y + 1))
-        {
-            return 0;
-        }
+        return 0;
     }
 
     return 1;

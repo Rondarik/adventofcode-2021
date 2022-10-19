@@ -38,6 +38,12 @@ int getMaxX(dynArray *array)
 {
     return array->maxX;
 }
+int groesseX(dynArray *array) {
+    return (array->maxX)+1;
+}
+int groesseY(dynArray *array) {
+    return (array->maxY)+1;
+}
 
 int getMaxY(dynArray *array)
 {
