@@ -4,16 +4,16 @@
 
 #include "dynarray.h"
 
-typedef struct myStack 
+typedef struct myStack
 {
     dynArray *data;
     int topIndex;
-}stack;
+} stack;
 
-
-char peek(stack*);
-void push(stack *, char);
-char pop(stack *);
+stack *newStack();
+int peek(stack *);
+void push(stack *, int);
+int pop(stack *);
 int isEmpty(stack *);
 
 void parstxt(FILE *fp) {}
@@ -48,6 +48,17 @@ int main(int argc, char *argv[])
     {
         printf("fail pop b\n");
     }
+
+    push(theStack, 'c');
+    if (pop(theStack) != 'c')
+    {
+        printf("fail pop c\n");
+    }
+
+    if (peek(theStack) != 'a')
+    {
+        printf("fail peek a\n");
+    }
     if (pop(theStack) != 'a')
     {
         printf("fail pop a\n");
@@ -58,37 +69,38 @@ int main(int argc, char *argv[])
     }
 }
 
-stack *newStack(){
+stack *newStack()
+{
 
-    stack *ergebnis = (stack*)malloc(sizeof(stack));
+    stack *ergebnis = (stack *)malloc(sizeof(stack));
     ergebnis->data = erzeuge();
     ergebnis->topIndex = -1;
 
     return ergebnis;
 }
 
-char peek(stack *theStack)
+int peek(stack *theStack)
 {
 
-    return wertbei(theStack, getMaxX(theStack), 0);
+    return wertbei(theStack->data, theStack->topIndex, 0);
 }
 
-void push(stack *theStack, char c)
+void push(stack *theStack, int c)
 {
-
-    wertRein(theStack, groesseX(theStack), 0, c);
+    //stheStack->topIndex++;
+    wertRein(theStack->data, ++theStack->topIndex, 0, c);
 }
 
-char pop(stack *theStack)
+int pop(stack *theStack)
 {
+    int temp = wertbei(theStack->data, theStack->topIndex--, 0);
 
-    return wertbei(theStack, getMaxX(theStack), 0);
-    
+    return temp;
 }
 
 int isEmpty(stack *theStack)
 {
-    if (groesseX(theStack) == 0)
+    if (theStack->topIndex == -1)
     {
         return 1;
     }
