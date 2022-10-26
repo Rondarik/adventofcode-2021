@@ -41,3 +41,13 @@ int isEmpty(stack *theStack)
 
     return 0;
 }
+
+void clearStack(stack *theStack)
+{
+    while (!isEmpty(theStack))
+    {
+        pop(theStack);
+    }
+    
+
+}
