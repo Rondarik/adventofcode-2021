@@ -10,6 +10,7 @@
                 "${file}",
                 "common.c",
                 "dynarray.c",
+                "stack.c",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}.exe"
             ],
