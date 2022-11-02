@@ -7,6 +7,7 @@ int oeffnend(int input);
 int passtZusammen(int oeffnend, int schliessend);
 int wertVon(int schliessend);
 int schliessend(int input);
+int indexVon(int suchenIn[], int schliessend);
 
 const int anzahlklammern = 4;
 int oeffnendeKlammern[] = {'(', '[', '{', '<'};
@@ -56,50 +57,33 @@ int main(int argc, char *argv[])
 
 int oeffnend(int input)
 {
-    for (int i = 0; i < anzahlklammern; i++)
-    {
-        if (oeffnendeKlammern[i] == input)
-        {
-            return 1;
-        }
-    }
-    return 0;
+    return indexVon(oeffnendeKlammern, input) != -1;
 }
 int schliessend(int input)
 {
-
-    for (int i = 0; i < anzahlklammern; i++)
-    {
-        if (schliessendeKlammern[i] == input)
-        {
-            return 1;
-        }
-    }
-    return 0;
+    return indexVon(schliessendeKlammern, input) != -1;
 }
 
 int passtZusammen(int oeffnend, int schliessend)
 {
-
-    for (int i = 0; i < anzahlklammern; i++)
-    {
-        if (schliessendeKlammern[i] == schliessend)
-        {
-            return oeffnendeKlammern[i] == oeffnend;
-        }
-    }
-    return 0;
+    int index = indexVon(schliessendeKlammern, schliessend);
+    return oeffnendeKlammern[index] == oeffnend;
 }
 
 int wertVon(int schliessend)
 {
+    int index = indexVon(schliessendeKlammern, schliessend);
+    return klammerwerte[index];
+}
 
+int indexVon(int suchenIn[], int schliessend)
+{
     for (int i = 0; i < anzahlklammern; i++)
     {
-        if (schliessendeKlammern[i] == schliessend)
+        if (suchenIn[i] == schliessend)
         {
-            return klammerwerte[i];
+            return i;
         }
     }
-    return 0;
+    return -1;
 }
