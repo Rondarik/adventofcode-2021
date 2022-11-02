@@ -14,7 +14,6 @@ int oeffnendeKlammern[] = {'(', '[', '{', '<'};
 int schliessendeKlammern[] = {')', ']', '}', '>'};
 int klammerwerte[] = {3, 57, 1197, 25137};
 
-void parstxt(FILE *fp) {}
 
 int main(int argc, char *argv[])
 {
