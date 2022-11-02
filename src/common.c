@@ -9,24 +9,6 @@ int sucheZahl(FILE *fp)
     return (temp - '0');
 }
 
-void read(const char *filename)
-{
-    // Dateizeiger erstellen
-    FILE *fp;
-
-    // Datei oeffnen
-    fp = fopen(filename, "r");
-
-    if (fp == NULL)
-    {
-        printf("Datei konnte NICHT geoeffnet werden.\n");
-    }
-    else
-    {
-        parstxt(fp);
-    }
-}
-
 //liest Ziffern aus und setzt sie zu einer Zahl zusammen
 int leseZahl(FILE *fp)
 {
