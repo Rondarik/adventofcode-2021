@@ -6,32 +6,31 @@
 
 stack *newStack()
 {
-
-    stack *ergebnis = (stack *)malloc(sizeof(stack));
-    ergebnis->topElement = NULL;
-    return ergebnis;
+    stack *superStack = (stack *)malloc(sizeof(stack));
+    *superStack = NULL;
+    return superStack;
 }
 
 int peek(stack *theStack)
 {
-    return theStack->topElement->wert;
+    return (*theStack)->wert;
 }
 
 void push(stack *theStack, int c)
 {
-    element *temp = theStack->topElement;
-    theStack->topElement = (element *)malloc(sizeof(element));
+    element *temp = *theStack;
+    
+    *theStack = (element *)malloc(sizeof(element));
 
-    theStack->topElement->wert = c;
-    theStack->topElement->preElement = temp;
+    (*theStack)->wert = c;
+    (*theStack)->preElement = temp;
 }
 
 int pop(stack *theStack)
 {
-
-    int temp = theStack->topElement->wert;
-    element *oldTop = theStack->topElement;
-    theStack->topElement = theStack->topElement->preElement;
+    int temp = (*theStack)->wert;
+    element *oldTop = *theStack;
+    *theStack = (*theStack)->preElement;
     free(oldTop);
 
     return temp;
@@ -39,7 +38,7 @@ int pop(stack *theStack)
 
 int isEmpty(stack *theStack)
 {
-    if (theStack->topElement == NULL)
+    if (*theStack == NULL)
     {
         return 1;
     }

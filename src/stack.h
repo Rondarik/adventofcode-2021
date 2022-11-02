@@ -5,10 +5,7 @@ typedef struct elements
     void *preElement;
 } element;
 
-typedef struct stackpointer
-{
-    element *topElement;
-} stack;
+typedef element *stack;
 
 stack *newStack();
 int peek(stack *);
