@@ -8,6 +8,11 @@ int passtZusammen(int oeffnend, int schliessend);
 int wertVon(int schliessend);
 int schliessend(int input);
 
+const int anzahlklammern = 4;
+int oeffnendeKlammern[] = {'(', '[', '{', '<'};
+int schliessendeKlammern[] = {')', ']', '}', '>'};
+int klammerwerte[] = {3, 57, 1197, 25137};
+
 void parstxt(FILE *fp) {}
 
 int main(int argc, char *argv[])
@@ -51,85 +56,50 @@ int main(int argc, char *argv[])
 
 int oeffnend(int input)
 {
-    if (input == '(')
+    for (int i = 0; i < anzahlklammern; i++)
     {
-        return 1;
+        if (oeffnendeKlammern[i] == input)
+        {
+            return 1;
+        }
     }
-    if (input == '[')
-    {
-        return 1;
-    }
-    if (input == '{')
-    {
-        return 1;
-    }
-    if (input == '<')
-    {
-        return 1;
-    }
-
     return 0;
 }
 int schliessend(int input)
 {
-    if (input == ')')
-    {
-        return 1;
-    }
-    if (input == ']')
-    {
-        return 1;
-    }
-    if (input == '}')
-    {
-        return 1;
-    }
-    if (input == '>')
-    {
-        return 1;
-    }
 
+    for (int i = 0; i < anzahlklammern; i++)
+    {
+        if (schliessendeKlammern[i] == input)
+        {
+            return 1;
+        }
+    }
     return 0;
 }
 
 int passtZusammen(int oeffnend, int schliessend)
 {
 
-    if (schliessend == ')')
+    for (int i = 0; i < anzahlklammern; i++)
     {
-        return oeffnend == '(';
+        if (schliessendeKlammern[i] == schliessend)
+        {
+            return oeffnendeKlammern[i] == oeffnend;
+        }
     }
-    if (schliessend == ']')
-    {
-        return oeffnend == '[';
-    }
-    if (schliessend == '}')
-    {
-        return oeffnend == '{';
-    }
-    if (schliessend == '>')
-    {
-        return oeffnend == '<';
-    }
+    return 0;
 }
 
 int wertVon(int schliessend)
 {
 
-    if (schliessend == ')')
+    for (int i = 0; i < anzahlklammern; i++)
     {
-        return 3;
+        if (schliessendeKlammern[i] == schliessend)
+        {
+            return klammerwerte[i];
+        }
     }
-    if (schliessend == ']')
-    {
-        return 57;
-    }
-    if (schliessend == '}')
-    {
-        return 1197;
-    }
-    if (schliessend == '>')
-    {
-        return 25137;
-    }
+    return 0;
 }
