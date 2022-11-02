@@ -1,9 +1,13 @@
-#include "dynarray.h"
 
-typedef struct
+typedef struct elements
 {
-    dynArray *data;
-    int topIndex;
+    int wert;
+    void *preElement;
+} element;
+
+typedef struct stackpointer
+{
+    element *topElement;
 } stack;
 
 stack *newStack();

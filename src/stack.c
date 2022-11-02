@@ -3,38 +3,43 @@
 
 #include "stack.h"
 
+
 stack *newStack()
 {
 
     stack *ergebnis = (stack *)malloc(sizeof(stack));
-    ergebnis->data = erzeuge();
-    ergebnis->topIndex = -1;
-
+    ergebnis->topElement = NULL;
     return ergebnis;
 }
 
 int peek(stack *theStack)
 {
-
-    return wertbei(theStack->data, theStack->topIndex, 0);
+    return theStack->topElement->wert;
 }
 
 void push(stack *theStack, int c)
 {
-    // stheStack->topIndex++;
-    wertRein(theStack->data, ++theStack->topIndex, 0, c);
+    element *temp = theStack->topElement;
+    theStack->topElement = (element *)malloc(sizeof(element));
+
+    theStack->topElement->wert = c;
+    theStack->topElement->preElement = temp;
 }
 
 int pop(stack *theStack)
 {
-    int temp = wertbei(theStack->data, theStack->topIndex--, 0);
+
+    int temp = theStack->topElement->wert;
+    element *oldTop = theStack->topElement;
+    theStack->topElement = theStack->topElement->preElement;
+    free(oldTop);
 
     return temp;
 }
 
 int isEmpty(stack *theStack)
 {
-    if (theStack->topIndex == -1)
+    if (theStack->topElement == NULL)
     {
         return 1;
     }
@@ -48,6 +53,4 @@ void clearStack(stack *theStack)
     {
         pop(theStack);
     }
-    
-
 }
