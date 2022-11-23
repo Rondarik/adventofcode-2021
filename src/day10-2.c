@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "stack.h"
+#include "sortedList.h"
 
 int oeffnend(int input);
 int passtZusammen(int oeffnend, int schliessend);
@@ -19,16 +20,14 @@ int main(int argc, char *argv[])
 {
 
     stack *theStack = newStack();
+    sortedList *korrekurList = newList();
 
     // Datei oeffnen
-    FILE *fp = fopen("input10.txt", "r");
+    FILE *fp = fopen("realinput10.txt", "r");
 
     int64_t score = 0;
     int64_t korrekturScore = 0;
     int corrupted = 0;
-    int low = 0;
-    int middle = 0;
-    int hight = 0;
     int input;
     while ((input = getc(fp)) != EOF)
     {
@@ -66,14 +65,16 @@ int main(int argc, char *argv[])
                 }
                 printf("korrekturScore: %ld\n\n", korrekturScore);
 
-                
+                addElement(korrekurList, korrekturScore);              
 
                 korrekturScore = 0;
             }
         }
     }
+
     printf("Score: %ld\n", score);
-    printf("korrekturScore: %ld\n\n", korrekturScore);
+    printf("korrekturScore: %ld\n", korrekturScore);
+    printf("Mittlerer Wert: %ld\n\n", mittelwert(korrekurList));
 }
 
 int oeffnend(int input)
@@ -107,4 +108,9 @@ int indexVon(int suchenIn[], int schliessend)
         }
     }
     return -1;
+}
+
+int mittelwert(sortedList * theList){
+    
+    return listWertBei(theList,(sizeOfList(theList)/2));
 }

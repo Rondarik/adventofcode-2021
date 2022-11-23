@@ -1,16 +1,21 @@
+#ifndef _SORTEDLIST_H_
 
-typedef struct elements
+#define _SORTEDLIST_H_
+
+typedef struct listElements
 {
     int wert;
     void *nextElement;
-} element;
+} listElement;
 
 typedef struct listpointer
 {
-    element *firstElement;
+    listElement *firstElement;
 } sortedList;
 
 sortedList *newList();
 void addElement(sortedList*, int);
 int sizeOfList(sortedList *);
 int listWertBei(sortedList*, int);
+
+#endif

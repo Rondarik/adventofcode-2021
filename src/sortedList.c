@@ -13,11 +13,11 @@ sortedList *newList()
 
 void addElement(sortedList *list, int wert)
 {
-    element *newElement = (element *)malloc(sizeof(element));
+    listElement *newElement = (listElement *)malloc(sizeof(listElement));
     newElement->wert = wert;
 
-    element *horst = list->firstElement;
-    element *vorHorst = NULL;
+    listElement *horst = list->firstElement;
+    listElement *vorHorst = NULL;
     while (horst != NULL // nicht Ende der Liste (oder leere Liste)
            && horst->wert < wert)  // nicht vor horst einsortieren
     {
@@ -41,7 +41,7 @@ void addElement(sortedList *list, int wert)
 int sizeOfList(sortedList *list)
 {
     int anzahl = 0;
-    element *horst = list->firstElement;
+    listElement *horst = list->firstElement;
     while (horst != NULL)
     {
         horst = horst->nextElement;
@@ -54,7 +54,7 @@ int sizeOfList(sortedList *list)
 // index muss < sizeOfList(list) sein
 int listWertBei(sortedList *list, int index)
 {
-    element *horst = list->firstElement;
+    listElement *horst = list->firstElement;
     for (int i = 0; i < index; i++)
     {
         horst = horst->nextElement;
