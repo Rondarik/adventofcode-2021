@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     stack *theStack = newStack();
 
     // Datei oeffnen
-    FILE *fp = fopen("input10.txt", "r");
+    FILE *fp = fopen("realinput10.txt", "r");
 
     int64_t score = 0;
     int64_t korrekturScore = 0;
@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
     int middle = 0;
     int hight = 0;
     int input;
+    int korrekturCount = 0;
     while ((input = getc(fp)) != EOF)
     {
         if (oeffnend(input))
@@ -58,22 +59,22 @@ int main(int argc, char *argv[])
             }
             else
             {
+                korrekturCount++;
                 while (!isEmpty(theStack))
                 {
-
                     int temp = wertIncomplete[indexVon(oeffnendeKlammern, pop(theStack))];
                     korrekturScore = (korrekturScore * 5) + temp;
                 }
-                printf("korrekturScore: %ld\n\n", korrekturScore);
-
-                
+                printf("korrekturScore: %ld\n", korrekturScore);
+               
 
                 korrekturScore = 0;
             }
         }
     }
     printf("Score: %ld\n", score);
-    printf("korrekturScore: %ld\n\n", korrekturScore);
+    printf("korrekturen: %d\n", korrekturCount);
+    //printf("korrekturScore: %ld\n\n", korrekturScore);
 }
 
 int oeffnend(int input)
