@@ -16,56 +16,38 @@ void addElement(sortedList *list, int wert)
     element *newElement = (element *)malloc(sizeof(element));
     newElement->wert = wert;
 
-    // An leere Liste anfuegen
-    if (list->firstElement == NULL)
-    {
-        list->firstElement = newElement;
-        return;
-    }
-    // Am Anfang anfuegen
-    if (list->firstElement->wert > newElement->wert)
-    {
-        newElement->nextElement = list->firstElement;
-        list->firstElement = newElement;
-        return;
-    }
-    // Zwischen einfuegen
     element *horst = list->firstElement;
-    element *vorHorst;
-    while (horst->wert < wert)
+    element *vorHorst = NULL;
+    while (horst != NULL // nicht Ende der Liste (oder leere Liste)
+           && horst->wert < wert)  // nicht vor horst einsortieren
     {
-
-        // Am Ende anfuegen
-        if (horst->nextElement == NULL)
-        {
-            horst->nextElement = newElement;
-            return;
-        }
-
         vorHorst = horst;
         horst = horst->nextElement;
     }
-    vorHorst->nextElement = newElement;
+    if (vorHorst == NULL) // kein kleineres Element gefunden
+    {
+        // An Anfang
+        list->firstElement = newElement;
+    }
+    else
+    {
+        // in die Liste einreihen
+        vorHorst->nextElement = newElement;
+    }
+    // Rest der Liste anhängen
     newElement->nextElement = horst;
-    
 }
 
 int sizeOfList(sortedList *list)
 {
-    
-    if (list->firstElement == NULL)
-    {
-        return 0;
-    }
-    
-    int anzahl = 1;
+    int anzahl = 0;
     element *horst = list->firstElement;
-    while (horst->nextElement != NULL)
+    while (horst != NULL)
     {
         horst = horst->nextElement;
         anzahl++;
     }
-    
+
     return anzahl;
 }
 
@@ -76,8 +58,7 @@ int listWertBei(sortedList *list, int index)
     for (int i = 0; i < index; i++)
     {
         horst = horst->nextElement;
-
     }
-    
+
     return horst->wert;
 }

@@ -16,9 +16,12 @@ int main(int argc, char *argv[])
     addAndCheck(list, 3, 2, 4);
     addAndCheck(list, -2, 0, 5);
 
-    if (listWertBei(list, 0) != -2 || listWertBei(list, 1) != 1 || listWertBei(list, 2) != 2 || listWertBei(list, 3) != 3 || listWertBei(list, 3) != 5)
-    {
-        printf("reihenfolge falsch\n");
+    int erwartet[] = { -2, 1, 2, 3, 5};
+    for (int i = 0; i < 5; i++) {
+        if (listWertBei(list, i) != erwartet[i]) {
+            printf("reihenfolge falsch\n");
+            break;
+        }
     }
 }
 
