@@ -11,6 +11,6 @@ typedef struct listpointer
 } sortedList;
 
 sortedList *newList();
-void addElement();
-int sizeOfList();
-int listWertBei();
+void addElement(sortedList*, int);
+int sizeOfList(sortedList *);
+int listWertBei(sortedList*, int);

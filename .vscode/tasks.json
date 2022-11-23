@@ -11,6 +11,7 @@
                 "common.c",
                 "dynarray.c",
                 "stack.c",
+                "sortedList.c",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}.exe"
             ],

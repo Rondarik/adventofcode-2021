@@ -3,7 +3,6 @@
 
 #include "sortedList.h"
 
-
 sortedList *newList()
 {
 
@@ -12,55 +11,73 @@ sortedList *newList()
     return ergebnis;
 }
 
-void addElement(sortedList* list, int wert)
+void addElement(sortedList *list, int wert)
 {
-    element* newElement = (element *)malloc(sizeof(element));
+    element *newElement = (element *)malloc(sizeof(element));
     newElement->wert = wert;
 
-    //An leere Liste anfuehgen
+    // An leere Liste anfuegen
     if (list->firstElement == NULL)
     {
         list->firstElement = newElement;
+        return;
     }
-    //Am Anfang anfuehgen
+    // Am Anfang anfuegen
     if (list->firstElement->wert > newElement->wert)
     {
         newElement->nextElement = list->firstElement;
         list->firstElement = newElement;
+        return;
     }
-    //Zwischen einfuehgen
-    
-    // Bei welchem Next.Wert muss die while aufhören damit ich das neue 
-    // Elementeinfuehgen kann ohne das vorherige oder das aktuelle Element zu verlieren ??
-    element* horst = list->firstElement->nextElement;
+    // Zwischen einfuegen
+    element *horst = list->firstElement;
+    element *vorHorst;
     while (horst->wert < wert)
     {
+
+        // Am Ende anfuegen
+        if (horst->nextElement == NULL)
+        {
+            horst->nextElement = newElement;
+            return;
+        }
+
+        vorHorst = horst;
         horst = horst->nextElement;
-        break;
     }
+    vorHorst->nextElement = newElement;
+    newElement->nextElement = horst;
     
-    
+}
 
-    //Am Ende anfuehgen
-    if (/* condition */)
+int sizeOfList(sortedList *list)
+{
+    
+    if (list->firstElement == NULL)
     {
-        /* code */
+        return 0;
     }
     
+    int anzahl = 1;
+    element *horst = list->firstElement;
+    while (horst->nextElement != NULL)
+    {
+        horst = horst->nextElement;
+        anzahl++;
+    }
     
-
-
-
-
-    list->firstElement
+    return anzahl;
 }
 
-int sizeOfList(sortedList* list)
+// index muss < sizeOfList(list) sein
+int listWertBei(sortedList *list, int index)
 {
+    element *horst = list->firstElement;
+    for (int i = 0; i < index; i++)
+    {
+        horst = horst->nextElement;
 
-}
-
-int listWertBei(int index)
-{
-
+    }
+    
+    return horst->wert;
 }
